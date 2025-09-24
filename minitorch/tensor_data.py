@@ -1,3 +1,4 @@
+# type: ignore
 from __future__ import annotations
 
 import random
@@ -110,9 +111,9 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     """
     len1, len2 = len(shape1), len(shape2)
     if len1 < len2:
-        shape1 = (1,) * (len2 - len1) + shape1
+        shape1 = (1,) * (len2 - len1) + tuple(shape1)
     elif len2 < len1:
-        shape2 = (1,) * (len1 - len2) + shape2
+        shape2 = (1,) * (len1 - len2) + tuple(shape2)
 
     result_shape = []
     for dim1, dim2 in zip(shape1, shape2):
