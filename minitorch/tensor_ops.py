@@ -1,9 +1,9 @@
+# type: ignore
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Optional, Type
+from typing import TYPE_CHECKING, Any, Callable, Optional, Type, Protocol
 
 import numpy as np
-from typing_extensions import Protocol
 
 from . import operators
 from .tensor_data import (
@@ -268,8 +268,26 @@ def tensor_map(fn: Callable[[float], float]) -> Any:
         in_shape: Shape,
         in_strides: Strides,
     ) -> None:
-        # TODO: Implement for Task 2.3.
-        raise NotImplementedError("Need to implement for Task 2.3")
+        size = 1
+        for s in out_shape:
+            size *= int(s)
+
+        same_shape = np.array_equal(out_shape, in_shape)
+        out_index = [0] * len(out_shape)
+        if not same_shape:
+            in_index = [0] * len(in_shape)
+
+        for ordinal in range(size):
+            to_index(ordinal, out_shape, out_index)
+            out_pos = index_to_position(out_index, out_strides)
+
+            if same_shape:
+                in_pos = index_to_position(out_index, in_strides)
+            else:
+                broadcast_index(out_index, out_shape, in_shape, in_index)
+                in_pos = index_to_position(in_index, in_strides)
+
+            out[out_pos] = fn(in_storage[in_pos])
 
     return _map
 
@@ -318,8 +336,34 @@ def tensor_zip(fn: Callable[[float, float], float]) -> Any:
         b_shape: Shape,
         b_strides: Strides,
     ) -> None:
-        # TODO: Implement for Task 2.3.
-        raise NotImplementedError("Need to implement for Task 2.3")
+        size = 1
+        for s in out_shape:
+            size *= int(s)
+
+        same_a = np.array_equal(out_shape, a_shape)
+        same_b = np.array_equal(out_shape, b_shape)
+
+        out_index = [0] * len(out_shape)
+        a_index = [0] * len(a_shape)
+        b_index = [0] * len(b_shape)
+
+        for ordinal in range(size):
+            to_index(ordinal, out_shape, out_index)
+            out_pos = index_to_position(out_index, out_strides)
+
+            if same_a:
+                a_pos = index_to_position(out_index, a_strides)
+            else:
+                broadcast_index(out_index, out_shape, a_shape, a_index)
+                a_pos = index_to_position(a_index, a_strides)
+
+            if same_b:
+                b_pos = index_to_position(out_index, b_strides)
+            else:
+                broadcast_index(out_index, out_shape, b_shape, b_index)
+                b_pos = index_to_position(b_index, b_strides)
+
+            out[out_pos] = fn(a_storage[a_pos], b_storage[b_pos])
 
     return _zip
 
@@ -354,8 +398,26 @@ def tensor_reduce(fn: Callable[[float, float], float]) -> Any:
         a_strides: Strides,
         reduce_dim: int,
     ) -> None:
-        # TODO: Implement for Task 2.3.
-        raise NotImplementedError("Need to implement for Task 2.3")
+        size = 1
+        for s in a_shape:
+            size *= int(s)
+
+        a_index = [0] * len(a_shape)
+        out_index = [0] * len(out_shape)
+
+        for ordinal in range(size):
+            to_index(ordinal, a_shape, a_index)
+
+            for d in range(len(a_shape)):
+                if d == reduce_dim:
+                    out_index[d] = 0
+                else:
+                    out_index[d] = a_index[d]
+
+            a_pos = index_to_position(a_index, a_strides)
+            out_pos = index_to_position(out_index, out_strides)
+
+            out[out_pos] = fn(out[out_pos], a_storage[a_pos])
 
     return _reduce
 

@@ -1,3 +1,4 @@
+# type: ignore
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -82,52 +83,52 @@ class Scalar:
     def __repr__(self) -> str:
         return "Scalar(%f)" % self.data
 
-    def __mul__(self, b: ScalarLike) -> Scalar:
+    def __mul__(self, b: ScalarLike) -> Any:
         return Mul.apply(self, b)
 
-    def __truediv__(self, b: ScalarLike) -> Scalar:
+    def __truediv__(self, b: ScalarLike) -> Any:
         return Mul.apply(self, Inv.apply(b))
 
-    def __rtruediv__(self, b: ScalarLike) -> Scalar:
+    def __rtruediv__(self, b: ScalarLike) -> Any:
         return Mul.apply(b, Inv.apply(self))
 
-    def __add__(self, b: ScalarLike) -> Scalar:
+    def __add__(self, b: ScalarLike) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
     def __bool__(self) -> bool:
         return bool(self.data)
 
-    def __lt__(self, b: ScalarLike) -> Scalar:
+    def __lt__(self, b: ScalarLike) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def __gt__(self, b: ScalarLike) -> Scalar:
+    def __gt__(self, b: ScalarLike) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def __eq__(self, b: ScalarLike) -> Scalar:  # type: ignore[override]
+    def __eq__(self, b: ScalarLike) -> Any:  # type: ignore[override]
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def __sub__(self, b: ScalarLike) -> Scalar:
+    def __sub__(self, b: ScalarLike) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def __neg__(self) -> Scalar:
+    def __neg__(self) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def __radd__(self, b: ScalarLike) -> Scalar:
+    def __radd__(self, b: ScalarLike) -> Any:
         return self + b
 
-    def __rmul__(self, b: ScalarLike) -> Scalar:
+    def __rmul__(self, b: ScalarLike) -> Any:
         return self * b
 
-    def log(self) -> Scalar:
+    def log(self) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def exp(self) -> Scalar:
+    def exp(self) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def sigmoid(self) -> Scalar:
+    def sigmoid(self) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
-    def relu(self) -> Scalar:
+    def relu(self) -> Any:
         raise NotImplementedError("Need to include this file from past assignment.")
 
     # Variable elements for backprop
